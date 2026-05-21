@@ -10,382 +10,618 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --navy:      #0A1931;
-      --black:     #080E1A;
-      --off-white: #F5F5F5;
-      --saffron:   #FF7A00;
-      --green:     #00A86B;
-      --gray:      #9CA3AF;
-      --dark-card: #111827;
-      --border:    rgba(255,255,255,0.07);
+      --navy:#0A1931; --black:#080E1A; --off-white:#F5F5F5;
+      --saffron:#FF7A00; --green:#00A86B; --gray:#9CA3AF;
+      --dark-card:#0D1829; --border:rgba(255,255,255,0.06); --card-bg:#0A1625;
     }
-
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth;}
-    body {
-      background: var(--black);
-      color: var(--off-white);
-      font-family: 'Manrope', sans-serif;
-      overflow-x: hidden;
-    }
+    html{scroll-behavior:smooth}
+    body{background:var(--black);color:var(--off-white);font-family:'Manrope',sans-serif;overflow-x:hidden;cursor:none}
+    body::before{content:'';position:fixed;inset:0;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+    .cursor{width:10px;height:10px;background:var(--saffron);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);mix-blend-mode:screen;transition:width .2s,height .2s,background .2s}
+    .cursor-ring{width:36px;height:36px;border:1px solid rgba(255,122,0,.4);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:transform .18s ease,width .25s,height .25s,border-color .25s}
+    .tricolor-bar{height:3px;background:linear-gradient(to right,var(--saffron) 0% 33.3%,rgba(245,245,245,.35) 33.3% 66.6%,var(--green) 66.6% 100%);position:relative;z-index:200}
+    nav{position:fixed;top:3px;width:100%;z-index:100;padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,14,26,.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .3s}
+    .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;color:var(--off-white)}
+    .nav-logo span{color:var(--saffron)}
+    .nav-links{display:flex;gap:32px;list-style:none}
+    .nav-links a{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color .2s;position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--saffron);transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+    .nav-links a:hover{color:var(--off-white)}
+    .nav-links a:hover::after{transform:scaleX(1)}
+    .nav-links a.card-link{color:var(--saffron)}
+    .nav-cta{background:transparent;border:1px solid var(--saffron);color:var(--saffron);font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;padding:10px 24px;border-radius:1px;text-decoration:none;transition:background .2s,color .2s;position:relative;overflow:hidden}
+    .nav-cta::before{content:'';position:absolute;inset:0;background:var(--saffron);transform:translateX(-101%);transition:transform .25s ease;z-index:-1}
+    .nav-cta:hover{color:#000}
+    .nav-cta:hover::before{transform:translateX(0)}
+    #hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:100px 40px 120px;text-align:center}
+    .hero-mesh{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 60% 50% at 50% 60%,rgba(255,122,0,.08) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 20% 80%,rgba(0,168,107,.06) 0%,transparent 50%),radial-gradient(ellipse 50% 50% at 80% 20%,rgba(10,25,49,.8) 0%,transparent 60%);animation:meshPulse 8s ease-in-out infinite alternate}
+    @keyframes meshPulse{0%{opacity:.7;transform:scale(1)}100%{opacity:1;transform:scale(1.04)}}
+    .hero-scan{position:absolute;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.012) 2px,rgba(255,255,255,.012) 4px)}
+    .orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px)}
+    .orb-1{width:400px;height:400px;background:radial-gradient(circle,rgba(255,122,0,.12),transparent 70%);top:10%;left:5%;animation:orbFloat 12s ease-in-out infinite}
+    .orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(0,168,107,.08),transparent 70%);bottom:0;right:-5%;animation:orbFloat 15s ease-in-out infinite reverse}
+    @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-40px) scale(1.05)}66%{transform:translate(-20px,20px) scale(.97)}}
+    .crowd-wrap{position:absolute;bottom:0;left:0;right:0;height:180px;z-index:2;overflow:hidden}
+    .crowd-svg{width:100%;height:100%}
+    .crowd-gradient{position:absolute;inset:0;background:linear-gradient(to top,rgba(255,122,0,.06) 0%,transparent 100%)}
+    .hero-eyebrow{position:relative;z-index:5;display:inline-flex;align-items:center;gap:10px;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--green);border:1px solid rgba(0,168,107,.25);padding:7px 18px;border-radius:40px;margin-bottom:36px;animation:heroFadeUp 1s .1s both}
+    .hero-eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+    .hero-title{position:relative;z-index:5;font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,13vw,150px);line-height:.88;letter-spacing:1px;animation:heroFadeUp 1s .25s both}
+    .hero-title .line-saffron{color:var(--saffron);display:block}
+    .hero-title .line-dim{color:transparent;-webkit-text-stroke:1px rgba(245,245,245,.12);display:block}
+    .hero-sub{position:relative;z-index:5;font-size:11px;font-weight:600;letter-spacing:8px;text-transform:uppercase;color:rgba(156,163,175,.6);margin:20px 0 32px;animation:heroFadeUp 1s .38s both}
+    .hero-tagline{position:relative;z-index:5;font-size:clamp(14px,1.6vw,16px);font-weight:400;color:rgba(245,245,245,.5);max-width:480px;line-height:1.8;margin:0 auto 52px;animation:heroFadeUp 1s .5s both}
+    .hero-tagline em{color:var(--off-white);font-style:normal;font-weight:600}
+    .hero-actions{position:relative;z-index:5;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;animation:heroFadeUp 1s .62s both}
+    @keyframes heroFadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+    .scroll-indicator{position:absolute;bottom:190px;left:50%;transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:8px;animation:heroFadeUp 1s 1.2s both}
+    .scroll-indicator span{font-size:8px;letter-spacing:3px;color:rgba(156,163,175,.4);text-transform:uppercase}
+    .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(255,122,0,.6),transparent);animation:scrollPulse 2s ease-in-out infinite}
+    @keyframes scrollPulse{0%,100%{transform:scaleY(1);opacity:1}50%{transform:scaleY(.5);opacity:.4}}
+    .btn-primary{background:var(--saffron);color:#000;font-weight:800;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:16px 40px;border-radius:1px;text-decoration:none;border:none;cursor:none;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+    .btn-primary::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);transform:translateX(-101%) skewX(-15deg);transition:transform .4s ease}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,122,0,.3)}
+    .btn-primary:hover::after{transform:translateX(101%) skewX(-15deg)}
+    .btn-outline{border:1px solid rgba(245,245,245,.15);color:var(--gray);font-weight:600;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;padding:16px 40px;border-radius:1px;text-decoration:none;transition:border-color .2s,color .2s}
+    .btn-outline:hover{border-color:rgba(245,245,245,.4);color:var(--off-white)}
+    section{padding:110px 48px}
+    .container{max-width:1140px;margin:0 auto}
+    .section-label{font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--saffron);margin-bottom:20px;display:flex;align-items:center;gap:14px}
+    .section-label::before{content:'';display:inline-block;width:32px;height:1px;background:var(--saffron)}
+    .section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,88px);line-height:.92;margin-bottom:28px}
+    .accent{color:var(--saffron)}.green-text{color:var(--green)}
+    .tricolor-line{display:flex;height:2px;margin-bottom:32px;border-radius:2px;overflow:hidden;gap:2px}
+    .tricolor-line span{flex:1}
+    .tricolor-line span:nth-child(1){background:var(--saffron)}
+    .tricolor-line span:nth-child(2){background:rgba(245,245,245,.25)}
+    .tricolor-line span:nth-child(3){background:var(--green)}
+    #why{background:var(--navy);position:relative;overflow:hidden}
+    #why::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,122,0,.04),transparent 70%);right:-200px;top:-100px;pointer-events:none}
+    .why-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+    .issue-item{display:flex;gap:20px;align-items:flex-start;padding:20px 22px;margin-bottom:8px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-left:2px solid transparent;border-radius:2px;transition:border-color .3s,background .3s,transform .3s;cursor:none}
+    .issue-item:hover{border-left-color:var(--saffron);background:rgba(255,122,0,.04);transform:translateX(4px)}
+    .issue-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:rgba(255,122,0,.15);line-height:1;min-width:36px;transition:color .3s}
+    .issue-item:hover .issue-num{color:rgba(255,122,0,.5)}
+    .issue-text strong{display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--off-white);margin-bottom:5px}
+    .issue-text span{font-size:12px;color:var(--gray);line-height:1.6}
+    .why-quote{padding:44px;position:relative;background:rgba(255,122,0,.03);border:1px solid rgba(255,122,0,.1);border-radius:3px;overflow:hidden}
+    .why-quote::before{content:'"';position:absolute;font-family:'Bebas Neue',sans-serif;font-size:280px;color:rgba(255,122,0,.04);line-height:1;top:-40px;left:20px;pointer-events:none}
+    .why-quote blockquote{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1.05;color:var(--off-white);margin-bottom:20px;position:relative;z-index:1}
+    .why-quote blockquote span{color:var(--saffron)}
+    .why-quote p{font-size:13px;color:var(--gray);line-height:1.8;position:relative;z-index:1}
+    #manifesto{background:var(--black)}
+    .manifesto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:64px}
+    .manifesto-card{background:var(--dark-card);padding:44px 36px;position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),background .3s;cursor:none;border:1px solid var(--border)}
+    .manifesto-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+    .manifesto-card.s::before{background:var(--saffron)}
+    .manifesto-card.g::before{background:var(--green)}
+    .manifesto-card.w::before{background:rgba(245,245,245,.4)}
+    .manifesto-card:hover{transform:translateY(-6px);background:rgba(13,24,41,.9)}
+    .manifesto-card:hover::before{transform:scaleX(1)}
+    .manifesto-card.s:hover{box-shadow:0 20px 60px rgba(255,122,0,.08)}
+    .manifesto-card.g:hover{box-shadow:0 20px 60px rgba(0,168,107,.08)}
+    .card-num{font-family:'Bebas Neue',sans-serif;font-size:120px;line-height:1;position:absolute;top:16px;right:20px;opacity:.04;color:var(--off-white);pointer-events:none;transition:opacity .3s}
+    .manifesto-card:hover .card-num{opacity:.07}
+    .card-icon-wrap{width:44px;height:44px;border-radius:2px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:20px;border:1px solid var(--border);background:rgba(255,255,255,.03)}
+    .manifesto-card.s .card-icon-wrap{border-color:rgba(255,122,0,.2)}
+    .manifesto-card.g .card-icon-wrap{border-color:rgba(0,168,107,.2)}
+    .card-title{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1.08;margin-bottom:14px;color:var(--off-white)}
+    .card-desc{font-size:12px;color:var(--gray);line-height:1.75;margin-bottom:24px}
+    .card-demands{list-style:none;display:flex;flex-direction:column;gap:9px}
+    .card-demands li{font-size:11.5px;color:rgba(156,163,175,.8);padding-left:18px;position:relative;line-height:1.5}
+    .card-demands li::before{content:'—';position:absolute;left:0;color:var(--saffron);font-size:10px}
+    .manifesto-card.g .card-demands li::before{color:var(--green)}
+    #who{background:var(--navy)}
+    .who-intro{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-bottom:72px}
+    .who-body p{font-size:14px;color:var(--gray);line-height:1.85;margin-bottom:16px}
+    .who-body strong{color:var(--off-white)}
+    .who-stat-row{display:flex;gap:2px;margin-top:40px}
+    .who-stat{flex:1;padding:24px 20px;background:rgba(255,255,255,.02);border:1px solid var(--border);text-align:center}
+    .who-stat-num{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--saffron);display:block;line-height:1}
+    .who-stat-label{font-size:9px;letter-spacing:2px;color:var(--gray);text-transform:uppercase;margin-top:6px;display:block}
+    .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+    .pillar{padding:32px 28px;background:rgba(255,255,255,.02);border:1px solid var(--border);transition:background .25s,border-color .25s,transform .25s;cursor:none}
+    .pillar:hover{background:rgba(255,122,0,.04);border-color:rgba(255,122,0,.2);transform:translateY(-3px)}
+    .pillar:nth-child(even):hover{background:rgba(0,168,107,.04);border-color:rgba(0,168,107,.2)}
+    .pillar-num{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:3px;color:var(--saffron);margin-bottom:16px;display:block}
+    .pillar:nth-child(even) .pillar-num{color:var(--green)}
+    .pillar h3{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:10px;color:var(--off-white)}
+    .pillar p{font-size:12px;color:var(--gray);line-height:1.7}
+    #slogans{background:var(--black);padding:80px 48px}
+    .slogan-row{display:flex;align-items:center;justify-content:space-between;padding:40px 0;border-bottom:1px solid var(--border);gap:24px;transition:border-color .3s}
+    .slogan-row:first-child{border-top:1px solid var(--border)}
+    .slogan-row:hover{border-color:rgba(255,122,0,.2)}
+    .slogan-q{font-family:'Bebas Neue',sans-serif;font-size:clamp(42px,6vw,72px);line-height:1;transition:letter-spacing .4s}
+    .slogan-row:hover .slogan-q{letter-spacing:4px}
+    .slogan-q.orange{color:var(--saffron)}.slogan-q.green{color:var(--green)}.slogan-q.white{color:var(--off-white)}
+    .slogan-answer{max-width:340px;text-align:right;font-size:12.5px;color:var(--gray);line-height:1.7}
+    #join{background:var(--navy);position:relative;overflow:hidden}
+    #join::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,168,107,.07),transparent 70%);right:-100px;bottom:-100px;pointer-events:none}
+    .join-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+    .join-left h2{font-family:'Bebas Neue',sans-serif;font-size:64px;line-height:.92;margin-bottom:24px}
+    .join-left h2 span{color:var(--saffron)}
+    .join-left p{font-size:13.5px;color:var(--gray);line-height:1.8;margin-bottom:36px}
+    .join-points{display:flex;flex-direction:column;gap:16px}
+    .join-point{display:flex;gap:16px;align-items:flex-start}
+    .join-point-line{width:1px;background:var(--green);margin-top:8px;flex-shrink:0;height:14px}
+    .join-point span{font-size:13px;color:var(--gray);line-height:1.6}
+    .form-wrapper{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:2px;overflow:hidden}
+    .form-top-bar{height:2px;background:linear-gradient(to right,var(--saffron),var(--green))}
+    .form-wrapper iframe{display:block;width:100%;border:none}
 
-    /* Noise, tricolor, nav ... (leave unchanged) */
-    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg ...");pointer-events:none;z-index:9999;opacity:0.4;}
-    .tricolor-bar {
-      height: 4px;
-      background: linear-gradient(to right,
-        var(--saffron) 0%, var(--saffron) 33.3%,
-        rgba(245,245,245,0.4) 33.3%, rgba(245,245,245,0.4) 66.6%,
-        var(--green) 66.6%, var(--green) 100%);
-    }
-    nav {
-      position: fixed; top: 0; width: 100%; z-index: 100;
-      padding: 18px 40px;
-      display: flex; align-items: center; justify-content: space-between;
-      background: rgba(8, 14, 26, 0.85);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px; letter-spacing: 3px;
-      color: var(--off-white);
-    }
-    .nav-logo span{color:var(--saffron);}
-    .nav-links { display: flex; gap: 32px; list-style: none; }
-    .nav-links a {
-      font-size: 11px; font-weight: 600; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--gray);
-      text-decoration: none; transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--saffron);}
-    .nav-cta {
-      background: var(--saffron); color:#000; font-size: 11px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
-      padding:10px 22px; border-radius:2px; text-decoration:none; transition:opacity 0.2s;
-    }
-    .nav-cta:hover{opacity:0.85;}
+    /* ── SOCIAL SECTION ── */
+    #social{background:var(--black);padding:80px 48px;border-top:1px solid var(--border)}
+    .social-inner{display:flex;flex-direction:column;align-items:center;gap:48px}
+    .social-heading{text-align:center}
+    .social-heading h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,64px);margin-bottom:12px}
+    .social-heading p{font-size:13px;color:var(--gray);line-height:1.7}
+    .social-cards{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+    .social-card{display:flex;align-items:center;gap:16px;padding:20px 28px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:3px;text-decoration:none;color:var(--off-white);transition:background .25s,border-color .25s,transform .25s;min-width:200px}
+    .social-card:hover{transform:translateY(-3px)}
+    .social-card.insta:hover{background:rgba(225,48,108,.06);border-color:rgba(225,48,108,.25)}
+    .social-card.discord:hover{background:rgba(88,101,242,.06);border-color:rgba(88,101,242,.25)}
+    .social-card.twitter:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.2)}
+    .social-icon{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .social-card.insta .social-icon{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}
+    .social-card.discord .social-icon{background:#5865F2}
+    .social-card.twitter .social-icon{background:#000}
+    .social-icon svg{width:22px;height:22px;fill:#fff}
+    .social-info{}
+    .social-platform{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:3px}
+    .social-handle{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--off-white)}
 
-    /* Hero */
-    #hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:120px 40px 80px;text-align:center;}
-    #hero::after{content:'';position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,122,0,0.10)0%,transparent70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
-    .crowd{position:absolute;bottom:0;left:0;right:0;height:160px;background:url("data:image/svg+xml,...");opacity:0.9;}
-    .crowd-glow{position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to top,rgba(255,122,0,0.07),transparent);pointer-events:none;}
-    .hero-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--green);border:1px solid rgba(0,168,107,0.3);padding:6px 16px;border-radius:20px;margin-bottom:32px;animation:fadeUp 0.8s ease both;}
-    .hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(64px,10vw,120px);line-height:0.92;letter-spacing:2px;position:relative;z-index:1;animation:fadeUp 0.8s 0.15s ease both;}
-    .hero-title .orange{color:var(--saffron);}
-    .hero-title .dim{color:rgba(245,245,245,0.15);}
-    .hero-sub{font-size:13px;font-weight:500;letter-spacing:5px;text-transform:uppercase;color:var(--gray);margin-top:16px;margin-bottom:28px;animation:fadeUp 0.8s 0.25s ease both;}
-    .hero-tagline{font-size:clamp(14px,2vw,17px);font-weight:400;color:rgba(245,245,245,0.6);max-width:520px;line-height:1.7;margin:0 auto 48px;animation:fadeUp 0.8s 0.35s ease both;}
-    .hero-tagline em{color:var(--off-white);font-style:normal;font-weight:600;}
-    .hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.8s 0.45s ease both;position:relative;z-index:1;}
-    .btn-primary{background:var(--saffron);color:#000;font-weight:800;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:16px 36px;border-radius:2px;text-decoration:none;transition:transform 0.2s,opacity 0.2s;}
-    .btn-primary:hover{transform:translateY(-2px);opacity:0.9;}
-    .btn-outline{border:1px solid rgba(245,245,245,0.2);color:var(--off-white);font-weight:600;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:16px 36px;border-radius:2px;text-decoration:none;transition:border-color 0.2s,color 0.2s;}
-    .btn-outline:hover{border-color:var(--saffron);color:var(--saffron);}
+    /* ── MEMBERSHIP CARD SECTION ── */
+    #membership-card-section{background:var(--black);padding:110px 48px;position:relative;overflow:hidden}
+    #membership-card-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 80% 50%,rgba(255,122,0,.06),transparent 70%),radial-gradient(ellipse 50% 50% at 20% 50%,rgba(0,168,107,.05),transparent 70%);pointer-events:none}
+    .card-section-inner{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
+    .card-form-side h2{font-family:'Bebas Neue',sans-serif;font-size:60px;line-height:.92;margin-bottom:20px}
+    .card-form-side h2 span{color:var(--saffron)}
+    .card-form-side p{font-size:13px;color:var(--gray);line-height:1.8;margin-bottom:36px}
+    .name-input-wrap{position:relative;margin-bottom:16px}
+    .name-input-wrap label{display:block;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--saffron);margin-bottom:10px}
+    .name-input-wrap input{width:100%;padding:18px 20px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:2px;color:var(--off-white);font-family:'Manrope',sans-serif;font-size:16px;font-weight:600;outline:none;letter-spacing:.5px;transition:border-color .25s,box-shadow .25s}
+    .name-input-wrap input::placeholder{color:rgba(156,163,175,.4)}
+    .name-input-wrap input:focus{border-color:rgba(255,122,0,.5);box-shadow:0 0 0 3px rgba(255,122,0,.08)}
+    #membership-form{display:flex;flex-direction:column;gap:0}
+    .gen-btn{width:100%;padding:18px;margin-top:16px;background:var(--saffron);color:#000;font-family:'Manrope',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;border:none;border-radius:2px;cursor:none;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+    .gen-btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);transform:translateX(-101%) skewX(-20deg);transition:transform .5s ease}
+    .gen-btn:hover{transform:translateY(-2px);box-shadow:0 16px 48px rgba(255,122,0,.25)}
+    .gen-btn:hover::after{transform:translateX(101%) skewX(-20deg)}
+    #card-loading{display:none;justify-content:center;align-items:center;min-height:60px;margin-top:32px;gap:12px}
+    #card-loading span{font-size:10px;letter-spacing:3px;color:var(--gray);text-transform:uppercase}
+    .card-spinner{width:20px;height:20px;border:2px solid rgba(255,122,0,.2);border-top-color:var(--saffron);border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    #card-display{display:none;flex-direction:column;align-items:center}
 
-    /* Section base and container */
-    section{padding:100px 40px;}
-    .container{max-width:1100px;margin:0 auto;}
+    /* ── PREMIUM WHITE MEMBERSHIP CARD ── */
+    .card-display-wrap{position:relative;perspective:1000px;margin-bottom:4px}
+    .yip-membership-card{width:380px;height:230px;position:relative;border-radius:16px;overflow:hidden;cursor:none;transform-style:preserve-3d;transition:transform .1s ease-out}
 
-    /* Manifesto */
-    .manifesto-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-      gap:2px;
-      margin-top:60px;
-    }
-    .manifesto-card.s::before{background:var(--saffron);}
-    .manifesto-card.g::before{background:var(--green);}
-    .manifesto-card.w::before{background:rgba(245,245,245,0.4);}
-    .manifesto-card{background:var(--dark-card);padding:40px 36px;position:relative;overflow:hidden;transition:transform 0.25s;cursor:default;}
-    .manifesto-card:hover{transform:translateY(-4px);z-index:2;}
-    .manifesto-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-    .card-num{font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:1;position:absolute;top:24px;right:28px;opacity:0.05;color:var(--off-white);pointer-events:none;}
-    .card-icon{font-size:28px;margin-bottom:16px;}
-    .card-title{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1.05;margin-bottom:12px;color:var(--off-white);}
-    .card-desc{font-size:12.5px;color:var(--gray);line-height:1.7;margin-bottom:20px;}
-    .card-demands{list-style:none;display:flex;flex-direction:column;gap:8px;}
-    .card-demands li{font-size:11.5px;color:var(--gray);padding-left:16px;position:relative;line-height:1.5;}
-    .card-demands li::before{content:'→';position:absolute;left:0;color:var(--saffron);font-size:11px;}
-    .manifesto-card.g .card-demands li::before{color:var(--green);}
+    /* Pure white layered base */
+    .card-base{position:absolute;inset:0;border-radius:16px;background:linear-gradient(135deg,#ffffff 0%,#f8f9fa 60%,#ffffff 100%)}
+    /* Subtle texture */
+    .card-texture{position:absolute;inset:0;border-radius:16px;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");opacity:.5}
+    /* Holographic pearl shimmer */
+    .card-holo{position:absolute;inset:0;border-radius:16px;background:linear-gradient(115deg,transparent 0%,rgba(255,122,0,.04) 25%,rgba(255,255,255,.15) 40%,rgba(0,168,107,.04) 55%,transparent 70%);background-size:300% 300%;animation:holoShimmer 5s ease-in-out infinite}
+    @keyframes holoShimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    /* Tricolor top stripe */
+    .card-tricolor-top{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,#FF7A00 0% 33.3%,white 33.3% 66.6%,#00A86B 66.6% 100%);border-radius:16px 16px 0 0}
+    /* Bottom tricolor thin line */
+    .card-tricolor-bottom{position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(to right,#FF7A00 0% 33.3%,rgba(200,200,200,.5) 33.3% 66.6%,#00A86B 66.6% 100%);border-radius:0 0 16px 16px;opacity:.5}
+    /* Border */
+    .card-glow-edge{position:absolute;inset:0;border-radius:16px;border:1px solid rgba(0,0,0,.06);box-shadow:0 4px 40px rgba(0,0,0,.08),inset 0 0 0 1px rgba(255,255,255,.8)}
+    /* Diagonal watermark stripe */
+    .card-stripe{position:absolute;top:-40px;right:60px;width:80px;height:340px;background:linear-gradient(135deg,rgba(255,122,0,.03),rgba(0,168,107,.03));transform:rotate(-15deg);pointer-events:none}
 
-    /* Responsive Grids and Spacing */
-    @media only screen and (max-width: 900px) {
-      .container {max-width: 98vw;}
-      section {padding: 80px 10px;}
-      .manifesto-card {padding:30px 10px;}
-      .manifesto-grid {margin-top: 30px;}
-    }
-    @media (max-width: 768px) {
-      nav { padding: 16px 10px; }
-      .nav-links { gap: 10px;}
-      section {padding: 54px 6px;}
-      #hero { padding: 100px 8px 70px;}
-      .manifesto-grid { grid-template-columns: 1fr; gap: 18px; margin-top: 20px; }
-      .manifesto-card { min-width: unset; max-width: 100%; border-radius: 7px;}
-      .why-grid { grid-template-columns: 1fr !important; gap: 26px;}
-      .container {max-width: 99vw;}
-      .pillars {grid-template-columns: 1fr !important;gap:14px;margin-top:24px;}
-      .slogans-list { gap:4px;}
-      .slogan-row { flex-direction: column; align-items: flex-start; padding:22px 0; gap:0;}
-      .slogan-q{font-size:30px;line-height:1.1;}
-      .slogan-answer { text-align:left; max-width:100%; font-size:12px;}
-      .footer-inner { grid-template-columns: 1fr; text-align: center; gap:18px;}
-      .footer-credit { text-align: center; }
-      .join-inner {grid-template-columns:1fr;gap:18px;}
-      .form-placeholder, .form-wrapper, .yip-card-glow {max-width:100vw;}
-      .yip-card-glow {min-width:0;width:96vw;}
-    }
-    @media (max-width: 440px) {
-      .manifesto-card {padding:18px 2vw;}
-      .yip-card-glow {padding:16px 3vw;}
-      .hero-title {font-size:44px;}
-      .slogan-q {font-size:21px;}
-    }
+    /* Card content */
+    .card-content{position:absolute;inset:0;padding:16px 20px 14px;display:flex;flex-direction:column;justify-content:space-between}
+    .card-top-row{display:flex;justify-content:space-between;align-items:flex-start}
+    .card-logo-img{width:52px;height:52px;object-fit:contain}
+    /* Chip */
+    .card-chip{width:36px;height:28px;background:linear-gradient(135deg,#c8a96e,#e8d5a0,#b8954e);border-radius:4px;position:relative;overflow:hidden}
+    .card-chip::before{content:'';position:absolute;inset:4px;border:1px solid rgba(139,90,0,.5);border-radius:2px}
+    .card-chip::after{content:'';position:absolute;width:1px;height:100%;background:rgba(139,90,0,.4);left:50%;transform:translateX(-50%)}
+    /* Divider */
+    .card-divider{height:1px;width:100%;background:linear-gradient(to right,#FF7A00,rgba(200,200,200,.4),#00A86B);opacity:.4}
+    /* Member info */
+    .card-mid-row{display:flex;flex-direction:column;gap:1px}
+    .card-member-label{font-size:7px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--saffron);opacity:.9}
+    .card-member-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:#0A1931;line-height:1.1;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .card-bottom-row{display:flex;justify-content:space-between;align-items:flex-end}
+    .card-bottom-left{display:flex;flex-direction:column;gap:3px}
+    .card-id-label{font-size:7px;letter-spacing:3px;color:rgba(10,25,49,.4);text-transform:uppercase}
+    .card-id-value{font-family:'Manrope',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(10,25,49,.7)}
+    .card-role-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(0,168,107,.1);border:1px solid rgba(0,168,107,.3);border-radius:20px}
+    .card-role-badge span{font-size:8px;font-weight:700;letter-spacing:2px;color:var(--green);text-transform:uppercase}
+    /* Party name bottom right */
+    .card-party-name{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:2px;color:rgba(10,25,49,.25);text-align:right;line-height:1.3}
 
-    /* Membership Card Feature CSS */
-    .yip-card-glow {
-      padding:24px 20px 18px 20px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #0A1931 0%, #111111 90%);
-      box-shadow: 0 8px 40px 0 rgba(0,168,107,0.08), 0 2px 20px 0 rgba(255,122,0,0.08);
-      position: relative;
-      min-width:320px;
-      max-width:350px;
-      min-height:210px;
-      margin-bottom:6px;
-      border: 2px solid rgba(255,122,0,0.22);
-      overflow: hidden;
-    }
-    .yip-card-glow::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 65% 35%, rgba(255,122,0,0.07) 0,transparent 60%);
-      z-index: 0;
-    }
-    .yip-card-main { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; }
-    .yip-card-logo { width:46px; height:46px; margin-bottom:6px; filter:drop-shadow(0 0 9px #FF7A00c8);}
-    .yip-card-title { font-family: 'Bebas Neue',sans-serif; font-size:1.37rem; letter-spacing:2.5px; color:#fff; text-shadow:0 2px 10px #1118; text-align:center;}
-    .yip-card-sub { color:#00A86B; font-size:0.98rem; margin-bottom:16px; letter-spacing:1px; }
-    .yip-card-divider { height:2px; width:80%; margin:12px 0 12px 0; background:linear-gradient(to right,#FF7A00 0,#F5F5F5 50%,#00A86B 100%); border-radius:8px;}
-    .yip-card-details { margin-bottom:10px; text-align:center;}
-    .yip-card-label { color:#FF7A00; font-size:0.94rem; margin-bottom:2px; font-weight:600; letter-spacing:1px;}
-    .yip-card-member-name { color:#fff; font-size:1.2rem; font-family:'Manrope',sans-serif; font-weight:800; text-shadow:0 3px 8px #000a; margin-bottom:5px; letter-spacing:1.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-    .yip-card-id-role { display:flex; gap:12px; align-items:center; margin-bottom:0px; justify-content:center;}
-    .yip-card-id { color:#9CA3AF; font-size:0.99rem; font-family:'Manrope',sans-serif; font-weight:500; letter-spacing:1px;}
-    .yip-card-role { color:#00A86B; font-size:0.99rem;font-weight:700; font-family:'Manrope',sans-serif;}
-    .yip-card-footer { color:rgba(245,245,245,0.87); font-size:0.93rem; letter-spacing:0.5px; margin-top:8px; font-family:'Manrope',sans-serif; text-align:center;}
-    .card-spinner { width:42px; height:42px; border:6px solid #FF7A00; border-top:6px solid #00A86B; border-radius:50%; animation:spin 0.8s linear infinite;}
-    @keyframes spin {0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-    .glow-input:focus { box-shadow:0 0 0 2px #FF7A0077; border: 1px solid #FF7A00; outline: none;}
+    #download-card{margin-top:20px;background:transparent;border:1px solid rgba(0,168,107,.4);color:var(--green);font-family:'Manrope',sans-serif;font-weight:700;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:13px 32px;border-radius:1px;cursor:none;transition:background .2s,color .2s,border-color .2s}
+    #download-card:hover{background:rgba(0,168,107,.1);border-color:var(--green)}
+    .card-notice{margin-top:12px;font-size:10px;color:rgba(156,163,175,.4);letter-spacing:1px;text-align:center}
 
-    /* Key animations (unchanged) */
-    @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+    footer{background:var(--black);border-top:1px solid var(--border);padding:52px 48px 36px}
+    .footer-inner{max-width:1140px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+    .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px}
+    .footer-logo span{color:var(--saffron)}
+    .footer-tagline{font-size:9px;color:rgba(156,163,175,.4);letter-spacing:3px;text-transform:uppercase;margin-top:6px}
+    .footer-credit{font-size:10px;color:rgba(156,163,175,.3);letter-spacing:1px}
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+
+    @media(max-width:768px){
+      body{cursor:auto}
+      .cursor,.cursor-ring{display:none}
+      nav{padding:0 20px}
+      .nav-links{display:none}
+      section{padding:70px 24px}
+      #slogans,#social{padding:60px 24px}
+      .why-grid,.who-intro,.join-inner,.card-section-inner{grid-template-columns:1fr;gap:48px}
+      .pillars,.social-cards{grid-template-columns:1fr 1fr}
+      .manifesto-grid{grid-template-columns:1fr}
+      .slogan-answer{display:none}
+      #hero{padding:120px 24px 100px}
+      .yip-membership-card{width:320px;height:195px}
+      .card-member-name{font-size:22px}
+    }
   </style>
 </head>
 <body>
-  <div class="tricolor-bar"></div>
-  <nav>
-    <div class="nav-logo">THE <span>YOUNG</span> INDIA PARTY</div>
-    <ul class="nav-links">
-      <li><a href="#why">Why YIP</a></li>
-      <li><a href="#manifesto">Manifesto</a></li>
-      <li><a href="#who">Who We Are</a></li>
-      <li><a href="#join">Join</a></li>
-      <li><a href="#membership-card-section" class="nav-link" style="color:#FF7A00; font-weight:800;">Membership Card</a></li>
-    </ul>
-    <a href="#join" class="nav-cta">Join the Movement</a>
-  </nav>
 
-  <!-- Your existing HERO section -->
-  <!-- ... -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+<div class="tricolor-bar"></div>
 
-  <!-- WHY WE EXIST -->
-  <section id="why">
-    <div class="container">
-      <div class="why-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
-        <div>
-          <p class="section-label reveal">Our Origin</p>
-          <h2 class="section-title reveal">WHY THIS<br><span class="accent">MOVEMENT</span><br>EXISTS.</h2>
-          <div class="why-issues">
-            <!-- ...five issue items remain unchanged... -->
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-logo">THE <span>YOUNG</span> INDIA PARTY</div>
+  <ul class="nav-links">
+    <li><a href="#why">Why YIP</a></li>
+    <li><a href="#manifesto">Manifesto</a></li>
+    <li><a href="#who">Who We Are</a></li>
+    <li><a href="#join">Join</a></li>
+    <li><a href="#social">Follow</a></li>
+    <li><a href="#membership-card-section" class="card-link">Membership Card</a></li>
+  </ul>
+  <a href="#join" class="nav-cta">Join the Movement</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-scan"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="hero-eyebrow"><div class="hero-eyebrow-dot"></div>A Movement for the Youth of India</div>
+  <h1 class="hero-title">THE<br><span class="line-saffron">YOUNG</span>INDIA<br><span class="line-dim">PARTY</span></h1>
+  <p class="hero-sub">Y &nbsp;&nbsp; I &nbsp;&nbsp; P</p>
+  <p class="hero-tagline"><em>"Made by Indian youth.</em><br>Trying to fix what adults normalized."</p>
+  <div class="hero-actions">
+    <a href="#join" class="btn-primary">Join YIP Now</a>
+    <a href="#manifesto" class="btn-outline">Read the Manifesto</a>
+  </div>
+  <div class="scroll-indicator"><span>Scroll</span><div class="scroll-line"></div></div>
+  <div class="crowd-wrap">
+    <svg class="crowd-svg" viewBox="0 0 1440 180" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0d2040" stop-opacity="0.95"/><stop offset="100%" stop-color="#060D1A" stop-opacity="1"/></linearGradient></defs>
+      <g fill="url(#cg)">
+        <rect x="0" y="90" width="42" height="90"/><ellipse cx="21" cy="84" rx="15" ry="15"/>
+        <rect x="48" y="100" width="36" height="80"/><ellipse cx="66" cy="95" rx="13" ry="13"/>
+        <rect x="90" y="80" width="40" height="100"/><ellipse cx="110" cy="73" rx="16" ry="16"/>
+        <rect x="136" y="95" width="37" height="85"/><ellipse cx="154" cy="89" rx="14" ry="14"/>
+        <rect x="180" y="85" width="42" height="95"/><ellipse cx="201" cy="78" rx="15" ry="15"/>
+        <rect x="272" y="76" width="44" height="104"/><ellipse cx="294" cy="68" rx="17" ry="17"/>
+        <rect x="324" y="92" width="38" height="88"/><ellipse cx="343" cy="85" rx="14" ry="14"/>
+        <rect x="370" y="82" width="42" height="98"/><ellipse cx="391" cy="75" rx="16" ry="16"/>
+        <rect x="464" y="78" width="44" height="102"/><ellipse cx="486" cy="70" rx="17" ry="17"/>
+        <rect x="516" y="94" width="37" height="86"/><ellipse cx="534" cy="88" rx="14" ry="14"/>
+        <rect x="562" y="84" width="40" height="96"/><ellipse cx="582" cy="77" rx="15" ry="15"/>
+        <rect x="656" y="80" width="42" height="100"/><ellipse cx="677" cy="73" rx="16" ry="16"/>
+        <rect x="748" y="74" width="46" height="106"/><ellipse cx="771" cy="65" rx="18" ry="18"/>
+        <rect x="802" y="92" width="38" height="88"/><ellipse cx="821" cy="85" rx="14" ry="14"/>
+        <rect x="896" y="98" width="36" height="82"/><ellipse cx="914" cy="92" rx="13" ry="13"/>
+        <rect x="940" y="78" width="44" height="102"/><ellipse cx="962" cy="70" rx="17" ry="17"/>
+        <rect x="992" y="90" width="40" height="90"/><ellipse cx="1012" cy="83" rx="15" ry="15"/>
+        <rect x="1086" y="76" width="44" height="104"/><ellipse cx="1108" cy="68" rx="17" ry="17"/>
+        <rect x="1228" y="84" width="42" height="96"/><ellipse cx="1249" cy="77" rx="16" ry="16"/>
+        <rect x="1322" y="80" width="44" height="100"/><ellipse cx="1344" cy="72" rx="17" ry="17"/>
+        <rect x="1374" y="88" width="66" height="92"/><ellipse cx="1407" cy="81" rx="18" ry="18"/>
+      </g>
+      <g fill="url(#cg)"><rect x="108" y="35" width="6" height="38"/><rect x="292" y="22" width="6" height="46"/><rect x="484" y="28" width="6" height="42"/><rect x="769" y="16" width="6" height="49"/><rect x="960" y="30" width="6" height="40"/><rect x="1106" y="22" width="6" height="46"/></g>
+    </svg>
+    <div class="crowd-gradient"></div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why">
+  <div class="container">
+    <div class="why-grid">
+      <div>
+        <p class="section-label reveal">Our Origin</p>
+        <h2 class="section-title reveal">WHY THIS<br><span class="accent">MOVEMENT</span><br>EXISTS.</h2>
+        <div class="why-issues">
+          <div class="issue-item reveal"><div class="issue-num">01</div><div class="issue-text"><strong>EXAM LEAKS</strong><span>Years of preparation destroyed overnight by corruption and negligence.</span></div></div>
+          <div class="issue-item reveal"><div class="issue-num">02</div><div class="issue-text"><strong>BROKEN EDUCATION</strong><span>A system that crushes curiosity and rewards rote learning over real thinking.</span></div></div>
+          <div class="issue-item reveal"><div class="issue-num">03</div><div class="issue-text"><strong>UNSAFE CAMPUSES</strong><span>Students shouldn't have to choose between education and personal safety.</span></div></div>
+          <div class="issue-item reveal"><div class="issue-num">04</div><div class="issue-text"><strong>VIP CULTURE</strong><span>Privilege shouldn't determine justice. Surnames shouldn't open doors.</span></div></div>
+          <div class="issue-item reveal"><div class="issue-num">05</div><div class="issue-text"><strong>YOUTH SILENCED</strong><span>A generation told to "adjust" while watching the system fail them.</span></div></div>
+        </div>
+      </div>
+      <div class="why-quote reveal">
+        <div class="tricolor-line"><span></span><span></span><span></span></div>
+        <blockquote>"Maybe the youth was never <span>the problem."</span></blockquote>
+        <p>Maybe what became normal was the problem. We are not here to complain — we are here to change it. YIP exists because someone finally had to.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="container">
+    <p class="section-label reveal">5 Core Demands</p>
+    <h2 class="section-title reveal">THE <span class="accent">MANIFESTO.</span></h2>
+    <p class="reveal" style="font-size:13.5px;color:var(--gray);max-width:480px;line-height:1.8;">Five non-negotiable demands for the India every young person deserves.</p>
+    <div class="manifesto-grid">
+      <div class="manifesto-card s reveal"><div class="card-num">1</div><div class="card-icon-wrap">📋</div><h3 class="card-title">EXAM LEAKS =<br>NATIONAL BETRAYAL</h3><p class="card-desc">Students prepare for years. Corruption destroys futures overnight.</p><ul class="card-demands"><li>Non-bailable offences for paper leak perpetrators</li><li>Lifetime bans for officials involved</li><li>Fast-track courts for exam fraud</li><li>End-to-end transparent examination systems</li></ul></div>
+      <div class="manifesto-card g reveal"><div class="card-num">2</div><div class="card-icon-wrap">🛡️</div><h3 class="card-title">SAFE CAMPUSES.<br>SAFE FUTURES.</h3><p class="card-desc">No student should choose between education and safety.</p><ul class="card-demands"><li>Mandatory campus safety audits</li><li>Adequate lighting and safe transport</li><li>24/7 emergency helplines on every campus</li><li>Zero-tolerance policy for harassment</li></ul></div>
+      <div class="manifesto-card s reveal"><div class="card-num">3</div><div class="card-icon-wrap">⚖️</div><h3 class="card-title">EQUAL RIGHTS.<br>EQUAL RESPECT.</h3><p class="card-desc">Equality for all. Respect goes both ways. Mental health matters.</p><ul class="card-demands"><li>Equal pay and opportunity in every field</li><li>Men's mental health destigmatized</li><li>Fast justice for gender-based crimes</li><li>33% women in leadership — minimum</li></ul></div>
+      <div class="manifesto-card w reveal"><div class="card-num">4</div><div class="card-icon-wrap">🚫</div><h3 class="card-title">NO VIP CULTURE.<br>NO FREEBIE POLITICS.</h3><p class="card-desc">Leadership is service. Youth want opportunities, not dependency.</p><ul class="card-demands"><li>Jobs over slogans</li><li>Skills over handouts</li><li>Accountability over privilege</li><li>Every public servant answers to the public</li></ul></div>
+      <div class="manifesto-card g reveal" style="grid-column:span 2"><div class="card-num">5</div><div class="card-icon-wrap">🏛️</div><h3 class="card-title">JUSTICE SHOULD NOT<br>DEPEND ON POWER.</h3><p class="card-desc">Your surname should not determine your sentence. Politics shouldn't require connections.</p><ul class="card-demands"><li>Legally mandated case resolution timelines</li><li>No political interference in investigations</li><li>Equal legal aid for every Indian</li><li>Elected officials under the same law as everyone</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section id="who">
+  <div class="container">
+    <div class="who-intro">
+      <div>
+        <p class="section-label reveal">Identity</p>
+        <h2 class="section-title reveal">WHO IS <span class="accent">YIP?</span></h2>
+        <div class="who-body">
+          <p class="reveal">YIP was not born in boardrooms by career politicians. It was born out of frustration — in classrooms, college corridors, and late-night conversations about a country that deserves better.</p>
+          <p class="reveal">We are students, graduates, first-time voters, and everyday citizens who refused to stay silent.</p>
+          <p class="reveal"><strong>Other parties talk TO youth. YIP is BUILT BY youth.</strong></p>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="who-stat-row">
+          <div class="who-stat"><span class="who-stat-num">600M+</span><span class="who-stat-label">Under 25</span></div>
+          <div class="who-stat"><span class="who-stat-num">18M</span><span class="who-stat-label">New voters/yr</span></div>
+          <div class="who-stat"><span class="who-stat-num">NOW</span><span class="who-stat-label">Our moment</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal"><span class="pillar-num">01 ——</span><h3>Education Reform</h3><p>Systemic overhaul of how India teaches — from rote to real thinking.</p></div>
+      <div class="pillar reveal"><span class="pillar-num">02 ——</span><h3>Campus Safety</h3><p>Every student deserves a campus to grow in, not just survive.</p></div>
+      <div class="pillar reveal"><span class="pillar-num">03 ——</span><h3>Equal Rights</h3><p>Equality is not a favour — it is the baseline every Indian deserves.</p></div>
+      <div class="pillar reveal"><span class="pillar-num">04 ——</span><h3>Real Opportunity</h3><p>Jobs and skills — not slogans. A future built on merit.</p></div>
+      <div class="pillar reveal"><span class="pillar-num">05 ——</span><h3>Transparent Justice</h3><p>A legal system where power doesn't determine outcome.</p></div>
+      <div class="pillar reveal"><span class="pillar-num">06 ——</span><h3>India 2047+</h3><p>Building for 100 years — not the next election cycle.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLOGANS -->
+<section id="slogans">
+  <div class="container">
+    <div class="slogan-row reveal"><div class="slogan-q orange">IF NOT US, WHO?</div><div class="slogan-answer">The youth of India has waited long enough. We are the generation that will finally act.</div></div>
+    <div class="slogan-row reveal"><div class="slogan-q green">IF NOT NOW, WHEN?</div><div class="slogan-answer">The time to act is not tomorrow. Not after the next election. It is today.</div></div>
+    <div class="slogan-row reveal"><div class="slogan-q white">IF NOT HERE, WHERE?</div><div class="slogan-answer">This is our country. We inherited its problems. We will shape its future.</div></div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section id="join">
+  <div class="container">
+    <div class="join-inner">
+      <div class="join-left">
+        <p class="section-label reveal">Get Involved</p>
+        <h2 class="reveal">JOIN <span>YIP</span><br>TODAY.</h2>
+        <p class="reveal">"Become the change you want to see in India." This is not a page — this is a generation speaking. Be part of it.</p>
+        <div class="join-points">
+          <div class="join-point reveal"><div class="join-point-line"></div><span>Volunteer in your city and connect with YIP members</span></div>
+          <div class="join-point reveal"><div class="join-point-line"></div><span>Become a campus ambassador at your college</span></div>
+          <div class="join-point reveal"><div class="join-point-line"></div><span>Join the core team and help shape the movement</span></div>
+          <div class="join-point reveal"><div class="join-point-line"></div><span>Spread the word — share this with every young Indian you know</span></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="form-wrapper">
+          <div class="form-top-bar"></div>
+          <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfN5mkQ94jPVUbNtyubVfxlXX9skqfChRbZm1tF4jS2j1kgyw/viewform?embedded=true" width="100%" height="900" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL MEDIA -->
+<section id="social">
+  <div class="container">
+    <div class="social-inner">
+      <div class="social-heading reveal">
+        <p class="section-label" style="justify-content:center">Follow the Movement</p>
+        <h2 class="section-title">FOLLOW <span class="accent">YIP.</span></h2>
+        <p>Stay connected. Stay updated. Be part of the conversation that's changing India.</p>
+      </div>
+      <div class="social-cards">
+        <a href="https://instagram.com/theyoungindiaparty" target="_blank" rel="noopener" class="social-card insta reveal">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
           </div>
+          <div class="social-info">
+            <div class="social-platform">Instagram</div>
+            <div class="social-handle">@theyoungindiaparty</div>
+          </div>
+        </a>
+        <a href="https://discord.gg/U9wXW249t" target="_blank" rel="noopener" class="social-card discord reveal">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          </div>
+          <div class="social-info">
+            <div class="social-platform">Discord</div>
+            <div class="social-handle">Join our Server</div>
+          </div>
+        </a>
+        <a href="https://x.com/TYIindia" target="_blank" rel="noopener" class="social-card twitter reveal">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="white"/></svg>
+          </div>
+          <div class="social-info">
+            <div class="social-platform">X (Twitter)</div>
+            <div class="social-handle">@TYIindia</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEMBERSHIP CARD -->
+<section id="membership-card-section">
+  <div class="container">
+    <div class="card-section-inner">
+      <div class="card-form-side">
+        <p class="section-label reveal">Digital Identity</p>
+        <h2 class="reveal">YOUR <span>MEMBERSHIP</span><br>CARD.</h2>
+        <p class="reveal">Generate your official YIP membership card. Download it, share it, own it — your identity as part of India's youth movement.</p>
+        <form id="membership-form" autocomplete="off">
+          <div class="name-input-wrap reveal">
+            <label>Your Full Name</label>
+            <input id="member-name" maxlength="22" required placeholder="Enter your name" />
+          </div>
+          <button type="submit" class="gen-btn reveal">Generate My Card</button>
+        </form>
+        <div id="card-loading"><div class="card-spinner"></div><span>Generating</span></div>
+        <div id="card-display">
+          <button id="download-card">↓ Download PNG</button>
+          <p class="card-notice">Share on Instagram · WhatsApp · Twitter</p>
         </div>
-        <div class="why-quote reveal">
-          <div class="tricolor-line"><span></span><span></span><span></span></div>
-          <blockquote>
-            "Maybe the youth was never<br>
-            <span>the problem."</span>
-          </blockquote>
-          <p>Maybe what became normal was the problem. We are not here to complain — we are here to change it. YIP exists because someone finally had to.</p>
-        </div>
       </div>
-    </div>
-  </section>
-
-  <!-- MANIFESTO (MOBILE FRIENDLY) -->
-  <section id="manifesto">
-    <div class="container">
-      <p class="section-label reveal">5 Core Demands</p>
-      <h2 class="section-title reveal">THE<br><span class="accent">MANIFESTO.</span></h2>
-      <p class="reveal" style="font-size:14px;color:var(--gray);max-width:500px;line-height:1.7;">Five non-negotiable demands for the India every young person deserves to grow up in.</p>
-      <div class="manifesto-grid">
-        <!-- All five cards (1-5) as in your original HTML... -->
-      </div>
-    </div>
-  </section>
-
-  <!-- WHO WE ARE section with .pillars now mobile-friendly -->
-  <section id="who">
-    <div class="container">
-      <!-- ...unchanged who content... -->
-      <div class="pillars">
-        <!-- ...pillar divs... -->
-      </div>
-    </div>
-  </section>
-
-  <!-- SLOGANS section (no-breaking now on mobile) -->
-  <section id="slogans">
-    <div class="container">
-      <div class="slogans-list">
-        <!-- ...slogan-row divs... -->
-      </div>
-    </div>
-  </section>
-
-  <!-- JOIN / FORM section -->
-  <section id="join">
-    <div class="container">
-      <div class="join-inner" style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;">
-        <!-- ...unchanged join left and form... -->
-      </div>
-    </div>
-  </section>
-
-  <!-- MEMBERSHIP CARD (as previously provided) -->
-  <section id="membership-card-section" style="padding: 80px 0; background: #0A1931; position:relative;">
-    <div class="container" style="max-width: 480px; margin: 0 auto;">
-      <h2 class="section-title" style="color:#FF7A00; text-align:center; margin-bottom:32px;">
-        LIVE DIGITAL MEMBERSHIP CARD <span role="img" aria-label="flag">🇮🇳</span>
-      </h2>
-      <form id="membership-form" autocomplete="off" style="display:flex; flex-direction:column; align-items:center; gap:24px;">
-        <input
-          id="member-name"
-          maxlength="32"
-          required
-          placeholder="Enter Your Name"
-          class="glow-input"
-          style="padding:16px 20px; border-radius:5px; border:none; background:#fff; color:#0A1931; font-size:1.1rem; width:80%; box-shadow:0 2px 12px 0 rgba(0,0,0,0.07); outline:none; margin-bottom:4px; font-family:'Manrope', sans-serif;"
-        />
-        <button
-          type="submit"
-          class="btn-primary"
-          style="background:#FF7A00; color:#fff; font-weight:800; font-size:1.1rem; letter-spacing:1px; border:none; border-radius:3px; padding:14px 36px; box-shadow:0 3px 12px 0 rgba(255,122,0,0.08); cursor:pointer; transition:.18s;"
-        >Generate Membership Card</button>
-      </form>
-      <div id="card-loading" style="display:none; justify-content:center; align-items:center; min-height:80px; margin-top:36px;">
-        <div class="card-spinner"></div>
-      </div>
-      <div id="card-display" style="display:none; flex-direction:column; align-items:center; margin-top:36px;">
-        <div id="yip-card-render" class="yip-card-glow"></div>
-        <button
-          id="download-card"
-          class="btn-primary"
-          style="background:#00A86B; color:#fff; font-weight:700; margin-top:18px; border:none; border-radius:3px; padding:11px 24px; box-shadow:0 2px 8px 0 rgba(0,168,107,0.13); cursor:pointer;"
-        >Download PNG</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER (now mobile-friendly) -->
-  <div class="tricolor-bar"></div>
-  <footer>
-    <div class="footer-inner" style="display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; gap: 40px; max-width:1100px;margin:0 auto;">
-      <div class="footer-left">
-        <div class="footer-logo">THE <span>YOUNG</span> INDIA PARTY</div>
-        <div class="footer-tagline">Future First Politics</div>
-      </div>
-      <div class="footer-social">
-        <a href="https://instagram.com/theyoungindiaparty" target="_blank" rel="noopener noreferrer" class="social-link">📷 INSTAGRAM</a>
-      </div>
-      <div class="footer-credit">Made by Indian youth. For Indian youth.</div>
-    </div>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script>
-    // Scroll reveal
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), i * 60);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    reveals.forEach(el => observer.observe(el));
-
-    // MEMBERSHIP CARD script
-    const membershipForm = document.getElementById('membership-form');
-    const cardDisplay = document.getElementById('card-display');
-    const cardRender = document.getElementById('yip-card-render');
-    const cardLoading = document.getElementById('card-loading');
-    const downloadBtn = document.getElementById('download-card');
-    function genMemberID() {
-      return 'YIP' + (
-        Date.now().toString().slice(-6) +
-        ('000' + Math.floor(Math.random() * 1000)).slice(-3)
-      );
-    }
-    function roleLabel() {
-      return Math.random() < 0.07 ? {label: 'Founding Supporter', emoji: '🌟'} : {label: 'Youth Member', emoji: '🔥'};
-    }
-    function emojiCardFlag() { return '🇮🇳'; }
-    membershipForm.addEventListener('submit', function(e){
-      e.preventDefault();
-      cardDisplay.style.display = 'none';
-      cardRender.innerHTML = '';
-      cardLoading.style.display = 'flex';
-      setTimeout(() => {
-        const nameInput = document.getElementById('member-name').value.trim();
-        const memberID = genMemberID();
-        const {label:role, emoji} = roleLabel();
-        cardRender.innerHTML = `
-          <div class="yip-card-main" style="z-index:2;position:relative;">
-            <img src="https://theyoungindiaparty.github.io/assets/yip-logo.svg" class="yip-card-logo" alt="YIP Logo" onerror="this.style.display='none'">
-            <div class="yip-card-title">THE YOUNG INDIA PARTY ${emojiCardFlag()}</div>
-            <div class="yip-card-sub">Made by Indian youth</div>
-            <div class="yip-card-divider"></div>
-            <div class="yip-card-details">
-              <div class="yip-card-label">MEMBER</div>
-              <div class="yip-card-member-name">${nameInput.replace(/[<>]/g,'')}</div>
-              <div class="yip-card-id-role">
-                <span class="yip-card-id">${memberID}</span>
-                <span class="yip-card-role">${emoji} ${role}</span>
+      <div class="card-preview-side reveal">
+        <div class="card-display-wrap" id="card-tilt-wrap">
+          <div class="yip-membership-card" id="yip-card-render">
+            <div class="card-base"></div>
+            <div class="card-texture"></div>
+            <div class="card-holo"></div>
+            <div class="card-stripe"></div>
+            <div class="card-tricolor-top"></div>
+            <div class="card-tricolor-bottom"></div>
+            <div class="card-glow-edge"></div>
+            <div class="card-content">
+              <div class="card-top-row">
+                <img class="card-logo-img" src="data:image/png;base64,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" alt="YIP Logo" />
+                <div class="card-chip"></div>
+              </div>
+              <div class="card-divider"></div>
+              <div class="card-mid-row">
+                <div class="card-member-label">Member Name</div>
+                <div class="card-member-name" id="card-name-display">YOUR NAME</div>
+              </div>
+              <div class="card-bottom-row">
+                <div class="card-bottom-left">
+                  <div class="card-id-label">Member ID</div>
+                  <div class="card-id-value" id="card-id-display">YIP · · · · · · ·</div>
+                </div>
+                <div>
+                  <div class="card-role-badge" id="card-role-display"><span>Youth Member</span></div>
+                  <div class="card-party-name" style="margin-top:4px">THE YOUNG<br>INDIA PARTY</div>
+                </div>
               </div>
             </div>
-            <div class="yip-card-footer">
-              Trying to fix what adults normalized.
-            </div>
-            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/torch.svg" style="position:absolute;bottom:20px;right:18px;opacity:.08;width:56px;height:56px;pointer-events:none;filter:invert(44%) sepia(88%) saturate(1600%) hue-rotate(10deg) brightness(96%) contrast(87%);" alt="torch icon" onerror="this.style.display='none'">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/India_location_map_outline.svg" style="position:absolute;left:0;bottom:0;width:80px;opacity:.10;pointer-events:none;" alt="India outline" onerror="this.style.display='none'">
           </div>
-        `;
-        cardLoading.style.display = 'none';
-        cardDisplay.style.display = 'flex';
-      }, 800);
+        </div>
+        <p style="font-size:9px;letter-spacing:2px;color:rgba(156,163,175,.3);text-align:center;margin-top:16px;text-transform:uppercase;">Type your name above to personalise</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="tricolor-bar"></div>
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">THE <span>YOUNG</span> INDIA PARTY</div>
+      <div class="footer-tagline">Future First Politics</div>
+    </div>
+    <div class="footer-credit">Made by Indian youth. For Indian youth.</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+  // Cursor
+  const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+  (function anim(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;cursor.style.left=mx+'px';cursor.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim)})();
+
+  // Scroll reveal
+  const revEls=document.querySelectorAll('.reveal');
+  new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*55);observer.unobserve(e.target)}})},{threshold:.1}).observe;
+  const observer=new IntersectionObserver((entries)=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*55);observer.unobserve(e.target)}})},{threshold:.1});
+  revEls.forEach(el=>observer.observe(el));
+
+  // Nav scroll
+  window.addEventListener('scroll',()=>{
+    document.getElementById('main-nav').style.background=window.scrollY>60?'rgba(8,14,26,.96)':'rgba(8,14,26,.82)';
+  });
+
+  // 3D tilt
+  const tiltWrap=document.getElementById('card-tilt-wrap'),cardEl=document.getElementById('yip-card-render');
+  tiltWrap.addEventListener('mousemove',e=>{
+    const r=tiltWrap.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    cardEl.style.transform='rotateY('+x*14+'deg) rotateX('+(-y*10)+'deg) scale(1.03)';
+    cardEl.style.transition='transform .08s ease-out';
+  });
+  tiltWrap.addEventListener('mouseleave',()=>{
+    cardEl.style.transform='rotateY(0) rotateX(0) scale(1)';
+    cardEl.style.transition='transform .5s ease';
+  });
+
+  // Live name preview
+  const nameInput=document.getElementById('member-name');
+  const nameDisplay=document.getElementById('card-name-display');
+  nameInput.addEventListener('input',()=>{nameDisplay.textContent=nameInput.value.trim().toUpperCase()||'YOUR NAME'});
+
+  // Generate card
+  function genID(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ';return'YIP-'+c[Math.floor(Math.random()*c.length)]+c[Math.floor(Math.random()*c.length)]+Date.now().toString().slice(-4)}
+  function getRole(){const r=Math.random();if(r<.04)return'Founding Member';if(r<.14)return'Core Team';return'Youth Member'}
+
+  const form=document.getElementById('membership-form');
+  const cardLoading=document.getElementById('card-loading');
+  const cardDisplay=document.getElementById('card-display');
+  const cardIDEl=document.getElementById('card-id-display');
+  const cardRoleEl=document.getElementById('card-role-display');
+
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const name=nameInput.value.trim();if(!name)return;
+    cardDisplay.style.display='none';cardLoading.style.display='flex';
+    setTimeout(()=>{
+      cardIDEl.textContent=genID();
+      cardRoleEl.innerHTML='<span>'+getRole()+'</span>';
+      nameDisplay.textContent=name.toUpperCase();
+      cardLoading.style.display='none';cardDisplay.style.display='flex';
+      cardEl.style.opacity='0.4';cardEl.style.transform='scale(.9) rotateY(-10deg)';
+      cardEl.style.transition='transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s';
+      setTimeout(()=>{cardEl.style.transform='scale(1) rotateY(0)';cardEl.style.opacity='1'},60);
+      setTimeout(()=>cardEl.style.transition='transform .08s ease-out',700);
+    },900);
+  });
+
+  document.getElementById('download-card').addEventListener('click',()=>{
+    html2canvas(cardEl,{backgroundColor:'#ffffff',scale:3,useCORS:true,logging:false}).then(canvas=>{
+      const a=document.createElement('a');a.download='YIP_MembershipCard.png';a.href=canvas.toDataURL('image/png');a.click();
     });
-    downloadBtn.addEventListener('click', function(){
-      html2canvas(cardRender, {backgroundColor: null, scale:2}).then(function(canvas){
-        const link = document.createElement('a');
-        link.download = 'YIP_MembershipCard.png';
-        link.href = canvas.toDataURL();
-        link.click();
-      });
-    });
-  </script>
+  });
+</script>
 </body>
 </html>
