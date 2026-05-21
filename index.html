@@ -509,6 +509,42 @@
       #hero { padding: 120px 20px 80px; }
       .footer-inner { grid-template-columns: 1fr; text-align: center; }
       .footer-credit { text-align: center; }
+  /*----cardcss----*/
+      .yip-card-glow {
+  padding:24px 20px 18px 20px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #0A1931 0%, #111111 90%);
+  box-shadow: 0 8px 40px 0 rgba(0,168,107,0.08), 0 2px 20px 0 rgba(255,122,0,0.08);
+  position: relative;
+  min-width:320px;
+  max-width:350px;
+  min-height:210px;
+  margin-bottom:6px;
+  border: 2px solid rgba(255,122,0,0.22);
+  overflow: hidden;
+}
+.yip-card-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 65% 35%, rgba(255,122,0,0.07) 0,transparent 60%);
+  z-index: 0;
+}
+.yip-card-main { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; }
+.yip-card-logo { width:46px; height:46px; margin-bottom:6px; filter:drop-shadow(0 0 9px #FF7A00c8);}
+.yip-card-title { font-family: 'Bebas Neue',sans-serif; font-size:1.37rem; letter-spacing:2.5px; color:#fff; text-shadow:0 2px 10px #1118; text-align:center;}
+.yip-card-sub { color:#00A86B; font-size:0.98rem; margin-bottom:16px; letter-spacing:1px; }
+.yip-card-divider { height:2px; width:80%; margin:12px 0 12px 0; background:linear-gradient(to right,#FF7A00 0,#F5F5F5 50%,#00A86B 100%); border-radius:8px;}
+.yip-card-details { margin-bottom:10px; text-align:center;}
+.yip-card-label { color:#FF7A00; font-size:0.94rem; margin-bottom:2px; font-weight:600; letter-spacing:1px;}
+.yip-card-member-name { color:#fff; font-size:1.2rem; font-family:'Manrope',sans-serif; font-weight:800; text-shadow:0 3px 8px #000a; margin-bottom:5px; letter-spacing:1.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.yip-card-id-role { display:flex; gap:12px; align-items:center; margin-bottom:0px; justify-content:center;}
+.yip-card-id { color:#9CA3AF; font-size:0.99rem; font-family:'Manrope',sans-serif; font-weight:500; letter-spacing:1px;}
+.yip-card-role { color:#00A86B; font-size:0.99rem;font-weight:700; font-family:'Manrope',sans-serif;}
+.yip-card-footer { color:rgba(245,245,245,0.87); font-size:0.93rem; letter-spacing:0.5px; margin-top:8px; font-family:'Manrope',sans-serif; text-align:center;}
+.card-spinner { width:42px; height:42px; border:6px solid #FF7A00; border-top:6px solid #00A86B; border-radius:50%; animation:spin 0.8s linear infinite;}
+@keyframes spin {0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.glow-input:focus { box-shadow:0 0 0 2px #FF7A0077; border: 1px solid #FF7A00; outline: none;}
     }
   </style>
 </head>
@@ -525,6 +561,7 @@
       <li><a href="#manifesto">Manifesto</a></li>
       <li><a href="#who">Who We Are</a></li>
       <li><a href="#join">Join</a></li>
+      <li><a href="#membership-card-section" class="nav-link" style="color:#FF7A00; font-weight:800;">Membership Card</a></li>
     </ul>
     <a href="#join" class="nav-cta">Join the Movement</a>
   </nav>
@@ -795,6 +832,41 @@
       </div>
     </div>
   </section>
+  
+  <!--card-->
+  <section id="membership-card-section" style="padding: 80px 0; background: #0A1931; position:relative;">
+  <div class="container" style="max-width: 480px; margin: 0 auto;">
+    <h2 class="section-title" style="color:#FF7A00; text-align:center; margin-bottom:32px;">
+      LIVE DIGITAL MEMBERSHIP CARD <span role="img" aria-label="flag">🇮🇳</span>
+    </h2>
+    <form id="membership-form" autocomplete="off" style="display:flex; flex-direction:column; align-items:center; gap:24px;">
+      <input
+        id="member-name"
+        maxlength="32"
+        required
+        placeholder="Enter Your Name"
+        class="glow-input"
+        style="padding:16px 20px; border-radius:5px; border:none; background:#fff; color:#0A1931; font-size:1.1rem; width:80%; box-shadow:0 2px 12px 0 rgba(0,0,0,0.07); outline:none; margin-bottom:4px; font-family:'Manrope', sans-serif;"
+      />
+      <button
+        type="submit"
+        class="btn-primary"
+        style="background:#FF7A00; color:#fff; font-weight:800; font-size:1.1rem; letter-spacing:1px; border:none; border-radius:3px; padding:14px 36px; box-shadow:0 3px 12px 0 rgba(255,122,0,0.08); cursor:pointer; transition:.18s;"
+      >Generate Membership Card</button>
+    </form>
+    <div id="card-loading" style="display:none; justify-content:center; align-items:center; min-height:80px; margin-top:36px;">
+      <div class="card-spinner"></div>
+    </div>
+    <div id="card-display" style="display:none; flex-direction:column; align-items:center; margin-top:36px;">
+      <div id="yip-card-render" class="yip-card-glow"></div>
+      <button
+        id="download-card"
+        class="btn-primary"
+        style="background:#00A86B; color:#fff; font-weight:700; margin-top:18px; border:none; border-radius:3px; padding:11px 24px; box-shadow:0 2px 8px 0 rgba(0,168,107,0.13); cursor:pointer;"
+      >Download PNG</button>
+    </div>
+  </div>
+</section>
 
   <!-- FOOTER -->
   <div class="tricolor-bar"></div>
@@ -825,5 +897,69 @@
     }, { threshold: 0.12 });
     reveals.forEach(el => observer.observe(el));
   </script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+const membershipForm = document.getElementById('membership-form');
+const cardDisplay = document.getElementById('card-display');
+const cardRender = document.getElementById('yip-card-render');
+const cardLoading = document.getElementById('card-loading');
+const downloadBtn = document.getElementById('download-card');
+
+function genMemberID() {
+  return 'YIP' + (
+    Date.now().toString().slice(-6) +
+    ('000' + Math.floor(Math.random() * 1000)).slice(-3)
+  );
+}
+function roleLabel() {
+  return Math.random() < 0.07 ? {label: 'Founding Supporter', emoji: '🌟'} : {label: 'Youth Member', emoji: '🔥'};
+}
+function emojiCardFlag() { return '🇮🇳'; }
+
+membershipForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  cardDisplay.style.display = 'none';
+  cardRender.innerHTML = '';
+  cardLoading.style.display = 'flex';
+
+  setTimeout(() => {
+    const nameInput = document.getElementById('member-name').value.trim();
+    const memberID = genMemberID();
+    const {label:role, emoji} = roleLabel();
+    cardRender.innerHTML = `
+      <div class="yip-card-main" style="z-index:2;position:relative;">
+        <img src="https://theyoungindiaparty.github.io/assets/yip-logo.svg" class="yip-card-logo" alt="YIP Logo" onerror="this.style.display='none'">
+        <div class="yip-card-title">THE YOUNG INDIA PARTY ${emojiCardFlag()}</div>
+        <div class="yip-card-sub">Made by Indian youth</div>
+        <div class="yip-card-divider"></div>
+        <div class="yip-card-details">
+          <div class="yip-card-label">MEMBER</div>
+          <div class="yip-card-member-name">${nameInput.replace(/[<>]/g,'')}</div>
+          <div class="yip-card-id-role">
+            <span class="yip-card-id">${memberID}</span>
+            <span class="yip-card-role">${emoji} ${role}</span>
+          </div>
+        </div>
+        <div class="yip-card-footer">
+          Trying to fix what adults normalized.
+        </div>
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/torch.svg" style="position:absolute;bottom:20px;right:18px;opacity:.08;width:56px;height:56px;pointer-events:none;filter:invert(44%) sepia(88%) saturate(1600%) hue-rotate(10deg) brightness(96%) contrast(87%);" alt="torch icon" onerror="this.style.display='none'">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/India_location_map_outline.svg" style="position:absolute;left:0;bottom:0;width:80px;opacity:.10;pointer-events:none;" alt="India outline" onerror="this.style.display='none'">
+      </div>
+    `;
+    cardLoading.style.display = 'none';
+    cardDisplay.style.display = 'flex';
+  }, 800);
+});
+downloadBtn.addEventListener('click', function(){
+  html2canvas(cardRender, {backgroundColor: null, scale:2}).then(function(canvas){
+    const link = document.createElement('a');
+    link.download = 'YIP_MembershipCard.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  });
+});
+</script>
 </body>
 </html>
